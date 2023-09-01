@@ -1,16 +1,16 @@
 import { Client, IntentsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle  } from "discord.js";
 import dotenv from 'dotenv'
-import register from "./events/ready/addCommands.js";
+import register from "./src/events/ready/addCommands.js";
 import mongoose from "mongoose";
-import config from "../config.js" 
-import User from "./models/userSchema.js";
-import rewardPosting from "./events/intercration/rewardPosting.js";
-import balance from "./events/intercration/balance.js";
-import shop from "./events/intercration/shop.js";
-import messageDelete from "./events/intercration/messageDelete.js";
-import top from "./events/intercration/top.js";
-import give from "./events/intercration/give.js";
-import take from "./events/intercration/take.js";
+import config from "./config.js" 
+import User from "./src/models/userSchema.js";
+import rewardPosting from "./src/events/intercration/rewardPosting.js";
+import balance from "./src/events/intercration/balance.js";
+import shop from "./src/events/intercration/shop.js";
+import messageDelete from "./src/events/intercration/messageDelete.js";
+import top from "./src/events/intercration/top.js";
+import give from "./src/events/intercration/give.js";
+import take from "./src/events/intercration/take.js";
 
 dotenv.config()
 
