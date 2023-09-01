@@ -55,5 +55,21 @@ export default [
                 required: true 
             }
         ]
+    },
+    {
+        name: "ticket",
+        description: "Открыть тикет",
+        options:[
+            {
+                name: "text",
+                description: "текст",
+                type: ApplicationCommandOptionType.String,
+                required: true 
+            }
+        ]
+    },
+    {
+        name: "close",
+        description: "Закрыть Тикет"
     }
 ]

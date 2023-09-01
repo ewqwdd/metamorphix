@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle  } from "discord.js";
+import { Client, IntentsBitField, EmbedBuilder, GatewayIntentBits, Partials  } from "discord.js";
 import dotenv from 'dotenv'
 import register from "./src/events/ready/addCommands.js";
 import mongoose from "mongoose";
@@ -11,12 +11,16 @@ import messageDelete from "./src/events/intercration/messageDelete.js";
 import top from "./src/events/intercration/top.js";
 import give from "./src/events/intercration/give.js";
 import take from "./src/events/intercration/take.js";
+import Ticket from "./src/models/tickets.js";
+import ticket from "./src/events/intercration/ticket.js";
+import thredMessage from "./src/events/intercration/thredMessage.js";
 
 dotenv.config()
 
 let rewarding_chats = config.rewarding_chats
 let roles = config.roles
 let bot_active_chat = config.bot_active_chat
+let ticket_log = config.ticket_log
 
 const client = new Client({
     intents:[
@@ -24,69 +28,103 @@ const client = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.GuildMembers,
-    ]
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent
+    ],
+    partials: [
+        Partials.Channel,
+        Partials.Message
+      ]
 })
 
 client.on("interactionCreate", async(interaction)=>{
     if(interaction.isChatInputCommand){
-        if(!interaction.channelId==='bot_active_chat'){ return }
-        
-        if(interaction.commandName === "balance"){
-            try{
-                await balance(interaction, client)
-                return
+        if(interaction.channelId==bot_active_chat){
+
+            if(interaction.commandName === "balance"){
+                try{
+                    await balance(interaction, client)
+                    return
+                }
+                catch(err){
+                    console.log(err)
+                }
+
             }
-            catch(err){
-                console.log(err)
+
+            if(interaction.commandName === "shop"){
+                try{
+                    await shop(interaction, client)
+                    return
+                }
+                catch(err){
+                    console.log(err)
+                }
+                
             }
+
+            if(interaction.commandName === "top"){
+                try{
+                    top(client, interaction)
+                    return
+                }
+                catch(err){
+                    console.log(err)
+                }
+                
+            }
+
+            if(interaction.commandName === "give"){
+                try{
+                    await give(interaction)
+                    return
+                }
+                catch(err){
+                    console.log(err)
+                }
+                
+            }
+
+            if(interaction.commandName === "take"){
+                try{
+                    await take(interaction)
+                    return
+                }
+                catch(err){
+                    console.log(err)
+                }
+                
+            }
+    }
+
+    let tickets = await Ticket.find()
+    let threads = tickets.map(elem=>elem?.thread_id)
+    if(threads.includes(interaction.channelId)){
+        if(interaction.commandName === "close"){
+            let thread_id = interaction.channelId
+            let ticket = await Ticket.findOneAndDelete({thread_id})
+            let user_id = ticket.user_id
+            await interaction.channel.delete()
+            await client.users.fetch(user_id)
+            let user = client.users.cache.get(user_id)
+            await user.send("📇 │Тикет закрыт")
 
         }
+    }
 
-        if(interaction.commandName === "shop"){
-            try{
-                await shop(interaction, client)
-                return
-            }
-            catch(err){
-                console.log(err)
-            }
-            
-        }
 
-        if(interaction.commandName === "top"){
-            try{
-                top(client, interaction)
-                return
-            }
-            catch(err){
-                console.log(err)
-            }
-            
-        }
-
-        if(interaction.commandName === "give"){
-            try{
-                await give(interaction)
-                return
-            }
-            catch(err){
-                console.log(err)
-            }
-            
-        }
-
-        if(interaction.commandName === "take"){
-            try{
-                await take(interaction)
-                return
-            }
-            catch(err){
-                console.log(err)
-            }
-            
+        if(interaction.commandName === "ticket"){
+           try{
+            await ticket(client, interaction)
+           }
+           catch(err){
+            console.log(err)
+           }
         }
         
     }
+
+    
     if(interaction.isButton){        
         if(!interaction.customId){ return }
         await interaction.deferReply()
@@ -155,13 +193,57 @@ client.on('ready', (c)=>{
 })
 
 client.on('messageCreate', async(msg)=>{
+    if(!msg.guild){
+
+        if(msg.content==="/close"){
+            let user_id = msg.author.id
+            let ticket = await Ticket.findOneAndDelete({user_id})
+            await client.channels.fetch(ticket.thread_id)
+            let channel = client.channels.cache.get(ticket.thread_id)
+            
+            await channel.delete()
+            msg.reply("📇 │Тикет закрыт")
+        }
+
+        let user = msg.author
+        let ticket = await Ticket.findOne({user_id: String(user.id)})
+        if(!ticket){ return }
+        await client.channels.fetch(ticket.thread_id)
+        let channel = client.channels.cache.get(ticket.thread_id)
+        const server = client.guilds.cache.get(process.env.GUILD_ID)
+        await server.roles.fetch(process.env.ADMIN_ROLE)
+        let role = server.roles.cache.get(process.env.ADMIN_ROLE)
+        let answer = `От пользователя ${user}
+
+${msg.content}
+
+${role}`
+
+    let updated = [
+        {
+            message_id: msg.id,
+            content: answer,
+            author: msg.author.id
+        },
+        ...ticket.messages
+    ]
+    await Ticket.findOneAndUpdate({_id: ticket._id}, {$set: {mesages: updated}}, {new: true})
+    await channel.send(answer)
+    msg.react('✅')
+    }
     if(msg.author.bot){ return }
+
+    thredMessage(client, msg)
+
     await rewardPosting(msg)
+    return
 })
 
 client.on('messageDelete', async(msg)=>{
     await messageDelete(msg)
 })
+
+
 
 let start = async()=>{
     try{
