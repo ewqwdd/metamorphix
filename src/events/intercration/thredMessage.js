@@ -8,7 +8,7 @@ export default async(client, msg)=>{
     let answer = `👀│Ответ от администрации::
 ${msg.content}`
 
-    if(threads.includes(msg.channelId)){
+    if(!threads.includes(msg.channelId)){ return }
         let ticket = await Ticket.findOne({thread_id: msg.channelId})
         let updated = [
             {
@@ -24,5 +24,5 @@ ${msg.content}`
         await user.send(answer)
         msg.react('✅')
         return
-    }
+    
 }

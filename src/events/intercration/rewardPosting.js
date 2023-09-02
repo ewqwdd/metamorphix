@@ -5,6 +5,7 @@ let rewarding_chats = config.rewarding_chats
 
 export default async(msg)=>{
     let keys = Object.keys(rewarding_chats)
+    console.log('reward')
     if(keys.includes(msg.channelId)){
         let user = await User.findOne({user_id: msg.author.id})
         if(!user){
