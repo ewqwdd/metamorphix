@@ -4,6 +4,8 @@ import Ticket from "../../models/tickets.js"
 export default async(client, msg)=>{
     let tickets = await Ticket.find()
     let threads = tickets.map(elem=>elem?.thread_id)
+    let attachemnts = msg.attachemnts
+    console.log(attachemnts)
 
     let answer = `👀│Ответ от администрации::
 ${msg.content}`
