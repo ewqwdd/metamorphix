@@ -213,6 +213,8 @@ client.on('messageCreate', async(msg)=>{
         const server = client.guilds.cache.get(process.env.GUILD_ID)
         await server.roles.fetch(process.env.ADMIN_ROLE)
         let role = server.roles.cache.get(process.env.ADMIN_ROLE)
+        let attachemnts = msg.attachments
+        console.log(attachemnts)
         let answer = `От пользователя ${user}
 
 ${msg.content}
