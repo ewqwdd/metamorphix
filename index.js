@@ -214,7 +214,7 @@ client.on('messageCreate', async(msg)=>{
         await server.roles.fetch(process.env.ADMIN_ROLE)
         let role = server.roles.cache.get(process.env.ADMIN_ROLE)
         let attachemnts = msg.attachments
-        console.log(attachemnts)
+
         let answer = `От пользователя ${user}
 
 ${msg.content}
@@ -230,7 +230,7 @@ ${role}`
         ...ticket.messages
     ]
     await Ticket.findOneAndUpdate({_id: ticket._id}, {$set: {mesages: updated}}, {new: true})
-    await channel.send(answer)
+    await channel.send({content: answer, files: attachemnts})
     msg.react('✅')
     }
     if(msg.author.bot){ return }
