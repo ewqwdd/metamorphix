@@ -229,8 +229,10 @@ ${role}`
         },
         ...ticket.messages
     ]
+    let files = attachemnts.map(elem=>({name: elem.name, attachemnt: elem.url}))
+    console.log(files)
     await Ticket.findOneAndUpdate({_id: ticket._id}, {$set: {mesages: updated}}, {new: true})
-    await channel.send({content: answer, files: attachemnts.map(elem=>({name: elem.name, attachemnt: elem.url}))})
+    await channel.send({content: answer, files})
     msg.react('✅')
     }
     if(msg.author.bot){ return }
