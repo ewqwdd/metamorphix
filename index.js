@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, EmbedBuilder, GatewayIntentBits, Partials  } from "discord.js";
+import { Client, IntentsBitField, EmbedBuilder, GatewayIntentBits, Partials, MessageAttachment  } from "discord.js";
 import dotenv from 'dotenv'
 import register from "./src/events/ready/addCommands.js";
 import mongoose from "mongoose";
@@ -229,7 +229,7 @@ ${role}`
         },
         ...ticket.messages
     ]
-    let files = attachemnts.map(elem=>({name: elem.name, attachemnt: elem.url}))
+    let files = attachemnts.map(elem=>(new MessageAttachment(elem.url ? elem.url : null)))
     console.log(files)
     await Ticket.findOneAndUpdate({_id: ticket._id}, {$set: {mesages: updated}}, {new: true})
     await channel.send({content: answer, files})
