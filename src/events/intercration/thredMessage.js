@@ -22,7 +22,7 @@ ${msg.content}`
         await Ticket.findOneAndUpdate({_id: ticket._id}, {$set: {message: updated}}, {new: true})
         await client.users.fetch(ticket.user_id)
         let user = client.users.cache.get(ticket.user_id)
-        let files = attachemnts.map(elem=>(elem.url))
+        let files = attachemnts ? attachemnts.map(elem=>(elem.url)) : []
         await user.send({content: answer, files})
         msg.react('✅')
         return
