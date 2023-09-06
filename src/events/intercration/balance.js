@@ -2,10 +2,11 @@ import User from "../../models/userSchema.js"
 import { EmbedBuilder } from "discord.js";
 
 export default async(interaction, client)=>{
-    interaction.deferReply()
+    await interaction.deferReply()
     let requestUser = interaction.user
     if(interaction.options.get("choosen_user")){
         let id = interaction.options.get("choosen_user").value
+        await client.users.fetch(id)
         requestUser = client.users.cache.get(id)
     }
     let user = await User.findOne({user_id: requestUser.id})
@@ -31,5 +32,5 @@ export default async(interaction, client)=>{
         .setThumbnail(requestUser.avatarURL())
         .setAuthor({name: 'Metamorphix', iconURL: client.user.avatarURL()})
 
-    interaction.editReply({embeds:[embed]})
+    await interaction.editReply({embeds:[embed]})
 }
