@@ -9,7 +9,7 @@ export default async(interaction)=>{
     let amount = interaction.options.get("amount").value
             
     let userRoles = Array.from(interaction.member.roles.cache.keys())
-    if(!userRoles.includes(process.env.ADMIN_ROLE) /*|| interaction.user.id !== process.env.DEV*/){ return }
+    if(!userRoles.includes(process.env.ADMIN_ROLE) || interaction.user.id !== process.env.DEV){ return }
     let user = await User.findOne({user_id: id})
     if(!user){
         let created = new User({
