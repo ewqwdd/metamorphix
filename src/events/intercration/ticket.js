@@ -11,9 +11,12 @@ export default async(client, interaction)=>{
     let content = interaction.options.get("text").value
     let id = interaction.user.id
     let existed = await Ticket.findOneAndDelete({user_id: id})
-    await client.channels.fetch(existed.thread_id)
-    let existedChannel = client.channels.cache.get(existed.thread_id)
-    await existedChannel.delete()
+    if(existed){
+        await client.channels.fetch(existed.thread_id)
+        let existedChannel = client.channels.cache.get(existed.thread_id)
+        await existedChannel.delete()
+    }
+    
    
     let title = `От пользователя ${interaction.user}
 
