@@ -7,15 +7,16 @@ export default async(interaction)=>{
     await interaction.deferReply({ephemeral: true})
     let id = interaction.options.get("choosen_user").value
     let amount = interaction.options.get("amount").value
-            
     let userRoles = Array.from(interaction.member.roles.cache.keys())
-    if(!userRoles.includes(process.env.ADMIN_ROLE) || interaction.user.id !== process.env.DEV){ 
+    if(!userRoles.includes(process.env.ADMIN_ROLE) && interaction.user.id !== process.env.DEV){ 
         return await interaction.editReply({content: `Нету прав`})
     }
     let user = await User.findOne({user_id: id})
+    console.log(id)
     if(!user){
+
         let created = new User({
-             user_id: requestUser.id,
+            user_id: requestUser.id,
             balance: Number(amount),
             displayName: requestUser.displayName,
             posts:[]
