@@ -76,7 +76,7 @@ client.on("interactionCreate", async(interaction)=>{
 
             if(interaction.commandName === "give"){
                 try{
-                    await give(interaction)
+                    await give(interaction, client)
                     return
                 }
                 catch(err){

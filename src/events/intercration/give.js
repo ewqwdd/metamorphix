@@ -3,7 +3,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-export default async(interaction)=>{
+export default async(interaction, client)=>{
     await interaction.deferReply({ephemeral: true})
     let id = interaction.options.get("choosen_user").value
     let amount = interaction.options.get("amount").value
