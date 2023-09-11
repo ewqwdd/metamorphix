@@ -15,7 +15,7 @@ export default async(interaction, client)=>{
     if(!user){
 
         await client.users.fetch(id)
-        let requestUser = await clinet.users.cache.get(id)
+        let requestUser = await client.users.cache.get(id)
         let created = new User({
             user_id: requestUser.id,
             balance: Number(amount),
