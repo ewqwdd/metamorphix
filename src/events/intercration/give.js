@@ -12,9 +12,10 @@ export default async(interaction)=>{
         return await interaction.editReply({content: `Нету прав`})
     }
     let user = await User.findOne({user_id: id})
-    console.log(id)
     if(!user){
 
+        await client.users.fetch(id)
+        let requestUser = await clinet.users.cache.get(id)
         let created = new User({
             user_id: requestUser.id,
             balance: Number(amount),
