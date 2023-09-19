@@ -21,7 +21,8 @@ export default async(msg)=>{
             })
             return await created.save()
         }
-        if(msg.content.length<20){ return }
+        let attachemnts = msg.attachemnts
+        if(msg.content.length<20 && !attachemnts){ return }
         let updatedData = {
             balance: user.balance+20,
             posts: [
