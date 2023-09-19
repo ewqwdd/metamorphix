@@ -21,7 +21,7 @@ export default async(msg)=>{
             })
             return await created.save()
         }
-        let attachments = msg.attachemnts
+        let attachemnts = msg.attachments
         console.log(attachments)
         if(msg.content.length<20 && !attachments){ return }
         let updatedData = {

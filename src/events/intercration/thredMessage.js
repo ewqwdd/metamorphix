@@ -4,9 +4,9 @@ import Ticket from "../../models/tickets.js"
 export default async(client, msg)=>{
     let tickets = await Ticket.find()
     let threads = tickets.map(elem=>elem?.thread_id)
-    let attachemnts = msg.attachemnts
+    let attachemnts = msg.attachments
 
-    let answer = `👀│Ответ от администрации::
+    let answer = `👀│Ответ от администрации:
 ${msg.content}`
 
     if(!threads.includes(msg.channelId)){ return }
