@@ -5,19 +5,17 @@ let rewarding_chats = config.rewarding_chats
 
 export default async(msg)=>{
     let keys = Object.keys(rewarding_chats)
-    let roles = await msg.member.roles.guild.fetch()
-    console.log(roles)
-    // console.log(msg.member.roles.cache)
-    // let member = await msg.member.fetch()
-    // console.log(member)
+    
     if(keys.includes(msg.channelId)){
         let user = await User.findOne({user_id: msg.author.id})
+        let roles = msg.member.roles.cache.map(elem=>elem.name)
         if(!user){
             let created = new User({
                 user_id: msg.author.id,
                 avatar: msg.author.avatarURL(),
                 balance: 20,
                 displayName: msg.author.displayName,
+                roles,
                 posts:[
                     {
                         post_id: msg.id,
@@ -32,11 +30,12 @@ export default async(msg)=>{
             balance: user.balance+20,
             displayName: msg.author.displayName,
             avatar: msg.author.avatarURL(),
+            roles,
             posts: [
                 ...user.posts,
                 {
                     post_id: msg.id,
-                    topic: rewarding_chats[msg.channel.id]
+                    topic: rewarding_chats[msg.channel.id],
                 }
             ]
         }
