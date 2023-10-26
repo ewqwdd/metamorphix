@@ -7,9 +7,9 @@ export default async(msg)=>{
     let keys = Object.keys(rewarding_chats)
     let roles = await msg.member.roles.guild.fetch()
     console.log(roles)
-    console.log(msg.member.roles.cache)
-    let member = await msg.member.fetch()
-    console.log(member)
+    // console.log(msg.member.roles.cache)
+    // let member = await msg.member.fetch()
+    // console.log(member)
     if(keys.includes(msg.channelId)){
         let user = await User.findOne({user_id: msg.author.id})
         if(!user){
