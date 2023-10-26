@@ -7,6 +7,9 @@ export default async(msg)=>{
     let keys = Object.keys(rewarding_chats)
     if(keys.includes(msg.channelId)){
         let user = await User.findOne({user_id: msg.author.id})
+        console.log(msg.author.avatar)
+        console.log(msg.author.avatarURL())
+        console.log(msg.author.globalName)
         if(!user){
             let created = new User({
                 user_id: msg.author.id,
@@ -24,6 +27,7 @@ export default async(msg)=>{
         
         let updatedData = {
             balance: user.balance+20,
+            displayName: msg.author.displayName,
             posts: [
                 ...user.posts,
                 {

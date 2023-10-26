@@ -7,6 +7,8 @@ let User = mongoose.Schema({
         default: 0,
     },
     displayName: String,
+    avatar: String,
+    roles: [String],
     posts: [
         {
             post_id: String,
